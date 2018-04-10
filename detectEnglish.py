@@ -1,44 +1,42 @@
-class DetectEnglish:
-    UPPERLETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    LETTERS_AND_SPACE = UPPERLETTERS + UPPERLETTERS.lower() + ' \t\n'
-    ENGLISH_WORDS = DetectEnglish.loadDictionary()
+UPPERLETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+LETTERS_AND_SPACE = UPPERLETTERS + UPPERLETTERS.lower() + ' \t\n'
 
-    @staticmethod
-    def loadDictionary(self):
-        dictionaryFile = open('dictionary.txt')
-        englishWords = {}
-        for word in dictionaryFile.read().split('\n'):
-            englishWords[word] = None
-        dictionaryFile.close()
-        return englishWords
+def loadDictionary():
+    dictionaryFile = open('dictionary.txt')
+    englishWords = {}
+    for word in dictionaryFile.read().split('\n'):
+        englishWords[word] = None
+    dictionaryFile.close()
+    return englishWords
 
-    @staticmethod
-    def getEnglishCount(message):
-        message = message.upper()
-        message = removeNonLetters(message)
-        possibleWords = message.split()
+ENGLISH_WORDS = loadDictionary()
 
-        if possibleWords == []:
-            return 0.0
+def getEnglishCount(message):
+    message = message.upper()
+    message = removeNonLetters(message)
+    possibleWords = message.split()
 
-        matches = 0
-        for word in possibleWords:
-            if word in ENGLISH_WORDS:
-                matches += 1
-        return float(matches) / len(possibleWords)
+    if possibleWords == []:
+        return 0.0
 
-    @staticmethod
-    def removeNonLetters(message):
-        lettersOnly = []
-        for symbol in message:
-            if symbol in LETTERS_AND_SPACE:
-                lettersOnly.append(symbol)
-        return ''.join(lettersOnly)
+    matches = 0
+    for word in possibleWords:
+        if word in ENGLISH_WORDS:
+            matches += 1
+    return float(matches) / len(possibleWords)
 
-    @staticmethod
-    def isEnglish(message, wordPercentage = 20, letterPercentage = 85):
-        wordsMatch = DetectEnglish.getEnglishCount(message) * 100 >= wordPercentage
-        numLetters = len(DetectEnglish.removeNonLetters(message))
-        messageLettersPercentage = float(numLetters) / len(message) * 100
-        lettersMatch = messageLettersPercentage >= letterPercentage
-        return wordsMatch and lettersMatch
+def removeNonLetters(message):
+    lettersOnly = []
+    for symbol in message:
+        if symbol in LETTERS_AND_SPACE:
+            lettersOnly.append(symbol)
+    return ''.join(lettersOnly)
+
+def isEnglish(message, wordPercentage = 20, letterPercentage = 85):
+    if (message is None or len(message) <= 0):
+        return False
+    wordsMatch = getEnglishCount(message) * 100 >= wordPercentage
+    numLetters = len(removeNonLetters(message))
+    messageLettersPercentage = float(numLetters) / len(message) * 100
+    lettersMatch = messageLettersPercentage >= letterPercentage
+    return wordsMatch and lettersMatch
