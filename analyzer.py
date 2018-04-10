@@ -137,8 +137,6 @@ class CaesarCipher(object):
                    charc = ord(char) + i
                    string =  string + chr(charc)
 
-            print(string)
-
 class VigCipher(object):
     def __init__(self):
         self.universe = [c for c in (chr(i) for i in range(32,127))]
@@ -178,32 +176,23 @@ class VigCipher(object):
 
         return ret_txt
 
-print (ord('z'))
-print (ord('a'))
 
-'''
 print("-----------------------\nCaesarCipher\n-----------------------")
 startTime = time.time()
 cipher = CaesarCipher()
 encrypted = cipher.encrypt(3, 'helloworld')
 print(encrypted)
-decrypted=cipher.decrypt(3,encrypted)
-print(decrypted)
-endTime = time.time()
-print(endTime - startTime)
+
 cipher.crack(encrypted)
-'''
-'''
+caesarTime = time.time() - startTime
+
+
 print("\n-----------------------\nVigCipher\n-----------------------")
+startTime = time.time()
 cipher = VigCipher()
-encrypted = cipher.vign('hello world how are you', 'APPLE', 'e')
+encrypted = cipher.vign('hello world how are you', 'ELEPHANT', 'e')
 print(encrypted)
 
-decrypted=cipher.vign(encrypted, 'testing', 'd')
-print(decrypted)
-'''
-
-'''
 fo = open('dictionary.txt')
 words = fo.readlines()
 fo.close()
@@ -212,6 +201,9 @@ for word in words:
     word = word.strip() # remove the newline at the end
     decryptedText = cipher.vign(encrypted, word, 'd')
     if detectEnglish.isEnglish(decryptedText, wordPercentage=40):
+        print("Done with: {}".format(decryptedText))
+        break
+        '''
         # Check with user to see if the decrypted key has been found.
         print()
         print('Possible encryption break:')
@@ -222,19 +214,15 @@ for word in words:
         if response.upper().startswith('D'):
             print("Done with : " + decryptedText)
             break
+        '''
+vigTime = time.time() - startTime
 
-'''
 
-
-'''
 print("\n-----------------------\nDESCipher\n-----------------------")
 startTime = time.time()
 cipher = DESCipher()
-encrypted = cipher.encrypt("How are you Thomas",'APPLE')
+encrypted = cipher.encrypt("hello world how are you",'ELEPHANT')
 print (encrypted)
-
-
-
 
 fo = open('dictionary.txt')
 words = fo.readlines()
@@ -244,6 +232,9 @@ for word in words:
     word = word.strip() # remove the newline at the end
     decryptedText = cipher.decrypt(encrypted, word)
     if detectEnglish.isEnglish(decryptedText, wordPercentage=40):
+        print("Done with: {}".format(decryptedText))
+        break
+        '''
         # Check with user to see if the decrypted key has been found.
         print()
         print('Possible encryption break:')
@@ -254,16 +245,15 @@ for word in words:
         if response.upper().startswith('D'):
             print("Done with : " + decryptedText)
             break
+        '''
 
-endTime = time.time()
-print(endTime - startTime)
-'''
+desTime = time.time() - startTime
 
 
 print("\n-----------------------\nAESCipher\n-----------------------")
 startTime = time.time()
 cipher = AESCipher()
-encrypted = cipher.encrypt("Hello World how are you doing today there", "elephant")
+encrypted = cipher.encrypt("hello world how are you", "ELEPHANT")
 print (encrypted)
 
 fo = open('dictionary.txt')
@@ -274,6 +264,9 @@ for word in words:
     word = word.strip() # remove the newline at the end
     decryptedText = cipher.decrypt(encrypted, word)
     if detectEnglish.isEnglish(decryptedText, wordPercentage=40):
+        print("Done with: {}".format(decryptedText))
+        break
+        '''
         # Check with user to see if the decrypted key has been found.
         print()
         print('Possible encryption break:')
@@ -284,5 +277,7 @@ for word in words:
         if response.upper().startswith('D'):
             print("Done with : " + decryptedText)
             break
-endTime = time.time()
-print(endTime - startTime)
+        '''
+aesTime = time.time() - startTime
+
+print("\nCaesar Timing: {}\nVigenere Timing: {}\nDES Timing: {}\nAES Timing: {}\n".format(caesarTime, vigTime, desTime, aesTime))
