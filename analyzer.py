@@ -11,9 +11,8 @@ class AESCipher(object):
     A classical AES Cipher. Can use any size of data and any size of password thanks to padding.
     Also ensure the coherence and the type of the data with a unicode to byte converter.
     """
-    def __init__(self, key):
+    def __init__(self):
         self.bs = 32
-        self.key = hashlib.sha256(AESCipher.str_to_bytes(key)).digest()
 
     @staticmethod
     def str_to_bytes(data):
@@ -29,17 +28,27 @@ class AESCipher(object):
     def _unpad(s):
         return s[:-ord(s[len(s)-1:])]
 
-    def encrypt(self, raw):
+    def encrypt(self, raw, key):
+        key = hashlib.sha256(AESCipher.str_to_bytes(key.upper())).digest()
         raw = self._pad(AESCipher.str_to_bytes(raw))
         iv = Random.new().read(AES.block_size)
-        cipher = AES.new(self.key, AES.MODE_CBC, iv)
-        return base64.b64encode(iv + cipher.encrypt(raw)).decode('utf-8')
+        cipher = AES.new(key, AES.MODE_CBC, iv)
+        try:
+            return base64.b64encode(iv + cipher.encrypt(raw)).decode('utf-8')
+        except UnicodeError:
+            return None
 
-    def decrypt(self, enc):
+
+    def decrypt(self, enc, key):
+        key = hashlib.sha256(AESCipher.str_to_bytes(key.upper())).digest()
         enc = base64.b64decode(enc)
         iv = enc[:AES.block_size]
-        cipher = AES.new(self.key, AES.MODE_CBC, iv)
-        return self._unpad(cipher.decrypt(enc[AES.block_size:])).decode('utf-8')
+        cipher = AES.new(key, AES.MODE_CBC, iv)
+        try:
+            return self._unpad(cipher.decrypt(enc[AES.block_size:])).decode('utf-8')
+        except UnicodeError:
+            return None
+
 
 
 class DESCipher(object):
@@ -217,7 +226,7 @@ for word in words:
 '''
 
 
-
+'''
 print("\n-----------------------\nDESCipher\n-----------------------")
 startTime = time.time()
 cipher = DESCipher()
@@ -248,18 +257,32 @@ for word in words:
 
 endTime = time.time()
 print(endTime - startTime)
-
-
 '''
+
+
 print("\n-----------------------\nAESCipher\n-----------------------")
 startTime = time.time()
-cipher = AESCipher(key= b"test")
-encrypted = cipher.encrypt("Hello World")
+cipher = AESCipher()
+encrypted = cipher.encrypt("Hello World how are you doing today there", "elephant")
 print (encrypted)
-new_cipher = AESCipher(key='test')
-decrypted = new_cipher.decrypt(str(encrypted))
-print(decrypted)
+
+fo = open('dictionary.txt')
+words = fo.readlines()
+fo.close()
+
+for word in words:
+    word = word.strip() # remove the newline at the end
+    decryptedText = cipher.decrypt(encrypted, word)
+    if detectEnglish.isEnglish(decryptedText, wordPercentage=40):
+        # Check with user to see if the decrypted key has been found.
+        print()
+        print('Possible encryption break:')
+        print('Key ' + str(word) + ': ' + decryptedText[:100])
+        print()
+        print('Enter D for done, or just press Enter to continue breaking:')
+        response = input('> ')
+        if response.upper().startswith('D'):
+            print("Done with : " + decryptedText)
+            break
 endTime = time.time()
 print(endTime - startTime)
-
-'''
