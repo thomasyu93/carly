@@ -5,6 +5,12 @@ from Crypto import Random
 from Crypto.Cipher import AES, DES
 import detectEnglish
 
+ALICE_MESSAGE = "Alice was beginning to get very tired of sitting by her sister\
+on the bank, and of having nothing to do:  once or twice she had\
+peeped into the book her sister was reading, but it had no\
+pictures or conversations in it, `and what is the use of a book,'\
+thought Alice `without pictures or conversation?'"
+
 
 class AESCipher(object):
     """
@@ -178,25 +184,25 @@ class VigCipher(object):
 
 
 print("-----------------------\nCaesarCipher\n-----------------------")
-startTime = time.time()
 cipher = CaesarCipher()
-encrypted = cipher.encrypt(3, 'helloworld')
+encrypted = cipher.encrypt(3, ALICE_MESSAGE)
 print(encrypted)
 
+startTime = time.time()
 cipher.crack(encrypted)
 caesarTime = time.time() - startTime
 
 
 print("\n-----------------------\nVigCipher\n-----------------------")
-startTime = time.time()
 cipher = VigCipher()
-encrypted = cipher.vign('hello world how are you', 'ELEPHANT', 'e')
+encrypted = cipher.vign(ALICE_MESSAGE, 'ELEPHANT', 'e')
 print(encrypted)
 
 fo = open('dictionary.txt')
 words = fo.readlines()
 fo.close()
 
+startTime = time.time()
 for word in words:
     word = word.strip() # remove the newline at the end
     decryptedText = cipher.vign(encrypted, word, 'd')
@@ -219,15 +225,15 @@ vigTime = time.time() - startTime
 
 
 print("\n-----------------------\nDESCipher\n-----------------------")
-startTime = time.time()
 cipher = DESCipher()
-encrypted = cipher.encrypt("hello world how are you",'ELEPHANT')
+encrypted = cipher.encrypt(ALICE_MESSAGE,'ELEPHANT')
 print (encrypted)
 
 fo = open('dictionary.txt')
 words = fo.readlines()
 fo.close()
 
+startTime = time.time()
 for word in words:
     word = word.strip() # remove the newline at the end
     decryptedText = cipher.decrypt(encrypted, word)
@@ -251,15 +257,15 @@ desTime = time.time() - startTime
 
 
 print("\n-----------------------\nAESCipher\n-----------------------")
-startTime = time.time()
 cipher = AESCipher()
-encrypted = cipher.encrypt("hello world how are you", "ELEPHANT")
+encrypted = cipher.encrypt(ALICE_MESSAGE, "ELEPHANT")
 print (encrypted)
 
 fo = open('dictionary.txt')
 words = fo.readlines()
 fo.close()
 
+startTime = time.time()
 for word in words:
     word = word.strip() # remove the newline at the end
     decryptedText = cipher.decrypt(encrypted, word)
