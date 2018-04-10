@@ -11,7 +11,6 @@ peeped into the book her sister was reading, but it had no\
 pictures or conversations in it, `and what is the use of a book,'\
 thought Alice `without pictures or conversation?'"
 
-
 class AESCipher(object):
     """
     A classical AES Cipher. Can use any size of data and any size of password thanks to padding.
@@ -184,8 +183,10 @@ class VigCipher(object):
 
 
 print("-----------------------\nCaesarCipher\n-----------------------")
+encryptStartTime = time.time()
 cipher = CaesarCipher()
 encrypted = cipher.encrypt(3, ALICE_MESSAGE)
+encryptCaesarTime = time.time() - encryptStartTime
 print(encrypted)
 
 startTime = time.time()
@@ -194,8 +195,10 @@ caesarTime = time.time() - startTime
 
 
 print("\n-----------------------\nVigCipher\n-----------------------")
+encryptStartTime = time.time()
 cipher = VigCipher()
 encrypted = cipher.vign(ALICE_MESSAGE, 'ELEPHANT', 'e')
+encryptVigTime = time.time() - encryptStartTime
 print(encrypted)
 
 fo = open('dictionary.txt')
@@ -209,24 +212,15 @@ for word in words:
     if detectEnglish.isEnglish(decryptedText, wordPercentage=40):
         print("Done with: {}".format(decryptedText))
         break
-        '''
-        # Check with user to see if the decrypted key has been found.
-        print()
-        print('Possible encryption break:')
-        print('Key ' + str(word) + ': ' + decryptedText[:100])
-        print()
-        print('Enter D for done, or just press Enter to continue breaking:')
-        response = input('> ')
-        if response.upper().startswith('D'):
-            print("Done with : " + decryptedText)
-            break
-        '''
+
 vigTime = time.time() - startTime
 
 
 print("\n-----------------------\nDESCipher\n-----------------------")
+encryptStartTime = time.time()
 cipher = DESCipher()
 encrypted = cipher.encrypt(ALICE_MESSAGE,'ELEPHANT')
+encryptDesTime = time.time() - encryptStartTime
 print (encrypted)
 
 fo = open('dictionary.txt')
@@ -240,25 +234,15 @@ for word in words:
     if detectEnglish.isEnglish(decryptedText, wordPercentage=40):
         print("Done with: {}".format(decryptedText))
         break
-        '''
-        # Check with user to see if the decrypted key has been found.
-        print()
-        print('Possible encryption break:')
-        print('Key ' + str(word) + ': ' + decryptedText[:100])
-        print()
-        print('Enter D for done, or just press Enter to continue breaking:')
-        response = input('> ')
-        if response.upper().startswith('D'):
-            print("Done with : " + decryptedText)
-            break
-        '''
 
 desTime = time.time() - startTime
 
 
 print("\n-----------------------\nAESCipher\n-----------------------")
+encryptStartTime = time.time()
 cipher = AESCipher()
 encrypted = cipher.encrypt(ALICE_MESSAGE, "ELEPHANT")
+encryptAesTime = time.time() - encryptStartTime
 print (encrypted)
 
 fo = open('dictionary.txt')
@@ -272,18 +256,8 @@ for word in words:
     if detectEnglish.isEnglish(decryptedText, wordPercentage=40):
         print("Done with: {}".format(decryptedText))
         break
-        '''
-        # Check with user to see if the decrypted key has been found.
-        print()
-        print('Possible encryption break:')
-        print('Key ' + str(word) + ': ' + decryptedText[:100])
-        print()
-        print('Enter D for done, or just press Enter to continue breaking:')
-        response = input('> ')
-        if response.upper().startswith('D'):
-            print("Done with : " + decryptedText)
-            break
-        '''
+
 aesTime = time.time() - startTime
 
-print("\nCaesar Timing: {}\nVigenere Timing: {}\nDES Timing: {}\nAES Timing: {}\n".format(caesarTime, vigTime, desTime, aesTime))
+print("\nCaesar Encrypt: {}\nVigenere Encrypt: {}\nDES Encrypt: {}\nAES Encrypt: {}".format(encryptCaesarTime, encryptVigTime, encryptDesTime, encryptAesTime))
+print("\nCaesar Crack: {}\nVigenere Crack: {}\nDES Crack: {}\nAES Crack: {}".format(caesarTime, vigTime, desTime, aesTime))
